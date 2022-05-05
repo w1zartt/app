@@ -60,13 +60,13 @@ public class BotController extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Message received = update.getMessage();
-        SendMessage messageToSend = null;
-        if (received.getText().equals(LibBotCommands.START_READ.getValue())) {
-            messageToSend = botService.getStartScreen(received.getChatId().toString());
-        }
+        SendMessage response = null;
+        if (update.hasMessage()) {
+            Message received = update.getMessage();
+            response = beans.get(received.getText()).createResponseForMessage(received);
+        } else if (update.hasCallbackQuery())
         try {
-            execute(messageToSend);
+            execute(response);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
