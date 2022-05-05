@@ -1,0 +1,18 @@
+telegram:
+  bot:
+    token: ${BOT_TOKEN}
+    userName: ${BOT_NAME}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5437/lib
+    username: ${POSTGRESQL_USER}
+    password: ${POSTGRESQL_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+
+    liquibase:
+      change-log: classpath:db/changelog/db.changelog-master.yaml
+
