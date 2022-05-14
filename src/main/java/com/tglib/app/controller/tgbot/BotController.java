@@ -64,7 +64,9 @@ public class BotController extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message received = update.getMessage();
             response = beans.get(received.getText()).createResponseForMessage(received);
-        } else if (update.hasCallbackQuery())
+        } else if (update.hasCallbackQuery()) {
+
+        }
         try {
             execute(response);
         } catch (TelegramApiException e) {
