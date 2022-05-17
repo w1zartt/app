@@ -23,7 +23,7 @@ public class DownloadBook implements Action {
         CloseableHttpClient aDefault = HttpClients.createDefault();
         HttpUriRequest authorization = RequestBuilder
             .get("https://cloud-api.yandex.net/v1/disk/resources/download?path=tg_lib/conc.pdf")
-            .addHeader("Authorization", "AQAAAAAhtlLwAAfm-iNBxUq-Fk4-spNYTUsB6p0").build();
+            .addHeader("Authorization", "").build();
         CloseableHttpResponse execute = aDefault.execute(authorization);
         byte[] bytes = execute.getEntity().getContent().readAllBytes();
         String s = new String(bytes);
