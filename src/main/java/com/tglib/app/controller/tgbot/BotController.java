@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -60,17 +62,31 @@ public class BotController extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        SendMessage response = null;
+        Object response = null;
         if (update.hasMessage()) {
             Message received = update.getMessage();
-            response = beans.get(received.getText()).createResponseForMessage(received);
+            response = beans.get(received.getText()).createResponseForMessage(received, received.getText());
         } else if (update.hasCallbackQuery()) {
-
+            var callbackQueryMessage = update.getCallbackQuery().getMessage();
+            var callbackQueryCommand =  update.getCallbackQuery().getData();
+            String text = callbackQueryCommand.substring(0, callbackQueryCommand.indexOf(":"));
+            response = beans.get(text).createResponseForMessage(callbackQueryMessage,
+                                                                callbackQueryCommand);
         }
         try {
-            execute(response);
+            sendMessage(response);
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void sendMessage(Object o) throws TelegramApiException {
+        if (o instanceof SendPhoto) {
+            execute((SendPhoto) o);
+        } else if (o instanceof SendMessage) {
+            execute((SendMessage) o);
+        } else if (o instanceof SendDocument) {
+            execute((SendDocument) o);
         }
     }
 }
